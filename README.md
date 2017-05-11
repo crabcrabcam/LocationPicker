@@ -1,5 +1,8 @@
 # LocationPicker
 
+## This version has just had the MapView stripped out. 
+[https://github.com/JeromeTan1997/LocationPicker](The master)
+
 A ready for use and fully customizable location picker for your app.
 
 ![](https://raw.githubusercontent.com/JeromeTan1997/LocationPicker/master/Screenshots/locationpicker.gif)
