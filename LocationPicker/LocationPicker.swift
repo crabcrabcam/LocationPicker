@@ -320,10 +320,7 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
     
     public let searchBar = UISearchBar()
     public let tableView = UITableView()
-    public let mapView = MKMapView()
-    public let pinView = UIImageView()
-    public let pinShadowView = UIView()
-    
+	
     public private(set) var barButtonItems: (doneButtonItem: UIBarButtonItem, cancelButtonItem: UIBarButtonItem)?
     
     
@@ -344,25 +341,7 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
     
     /// This property is used to record the longitudinal distance of the map view. This is neccessary because when user zoom in or zoom out the map view, func showMapViewWithCenterCoordinate(coordinate: CLLocationCoordinate2D, WithDistance distance: Double) will reset the region of the map view.
     public var longitudinalDistance: Double!
-    
-    
-    /// This property is used to record whether the map view center changes. This is neccessary because private func showMapViewWithCenterCoordinate(coordinate: CLLocationCoordinate2D, WithDistance distance: Double) would trigger func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) which calls func reverseGeocodeLocation(location: CLLocation), and this method calls private func showMapViewWithCenterCoordinate(coordinate: CLLocationCoordinate2D, WithDistance distance: Double) back, this would lead to an infinite loop.
-    public var isMapViewCenterChanged = false
-    
-    private var mapViewHeightConstraint: NSLayoutConstraint!
-    private var mapViewHeight: CGFloat {
-        get {
-            return view.frame.width / 3 * 2
-        }
-    }
-    
-    private var pinViewCenterYConstraint: NSLayoutConstraint!
-    fileprivate var pinViewImageHeight: CGFloat {
-        get {
-            return pinView.image!.size.height
-        }
-    }
-    
+	
     
     // MARK: Customs
     
@@ -516,44 +495,17 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
         tableView.dataSource = self
         tableView.keyboardDismissMode = .onDrag
         tableView.backgroundColor = tableViewBackgroundColor
-        
-        mapView.isZoomEnabled = isMapViewZoomEnabled
-        mapView.isRotateEnabled = false
-        mapView.isPitchEnabled = false
-        mapView.isScrollEnabled = isMapViewScrollEnabled
-        mapView.showsUserLocation = isMapViewShowsUserLocation
-        mapView.delegate = self
-        
-        pinView.image = pinImage ?? StyleKit.imageOfPinIconFilled(color: pinColor)
-        
-        pinShadowView.layer.cornerRadius = pinShadowViewDiameter / 2
-        pinShadowView.clipsToBounds = false
-        pinShadowView.backgroundColor = UIColor.lightGray.withAlphaComponent(0.8)
-        pinShadowView.layer.shadowColor = UIColor.black.cgColor
-        pinShadowView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        pinShadowView.layer.shadowRadius = 2
-        pinShadowView.layer.shadowOpacity = 1
-        
-        if isMapViewScrollEnabled {
-            let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGestureInMapViewDidRecognize(panGestureRecognizer:)))
-            panGestureRecognizer.delegate = self
-            mapView.addGestureRecognizer(panGestureRecognizer)
-        }
-        
+		
         view.addSubview(searchBar)
         view.addSubview(tableView)
-        view.addSubview(mapView)
-        mapView.addSubview(pinShadowView)
-        mapView.addSubview(pinView)
+
     }
     
     private func layoutViews() {
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        mapView.translatesAutoresizingMaskIntoConstraints = false
-        pinView.translatesAutoresizingMaskIntoConstraints = false
-        pinShadowView.translatesAutoresizingMaskIntoConstraints = false
-        
+
+		
         if #available(iOS 9.0, *) {
             searchBar.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
             searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
@@ -562,23 +514,8 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
             tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor).isActive = true
             tableView.leadingAnchor.constraint(equalTo: searchBar.leadingAnchor).isActive = true
             tableView.trailingAnchor.constraint(equalTo: searchBar.trailingAnchor).isActive = true
-            
-            mapView.topAnchor.constraint(equalTo: tableView.bottomAnchor).isActive = true
-            mapView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor).isActive = true
-            mapView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor).isActive = true
-            mapView.bottomAnchor.constraint(equalTo: bottomLayoutGuide.topAnchor).isActive = true
-            
-            mapViewHeightConstraint = mapView.heightAnchor.constraint(equalToConstant: 0)
-            mapViewHeightConstraint.isActive = true
-            
-            pinView.centerXAnchor.constraint(equalTo: mapView.centerXAnchor).isActive = true
-            pinViewCenterYConstraint = pinView.centerYAnchor.constraint(equalTo: mapView.centerYAnchor, constant: -pinViewImageHeight / 2)
-            pinViewCenterYConstraint.isActive = true
-            
-            pinShadowView.centerXAnchor.constraint(equalTo: mapView.centerXAnchor).isActive = true
-            pinShadowView.centerYAnchor.constraint(equalTo: mapView.centerYAnchor).isActive = true
-            pinShadowView.widthAnchor.constraint(equalToConstant: pinShadowViewDiameter).isActive = true
-            pinShadowView.heightAnchor.constraint(equalToConstant: pinShadowViewDiameter).isActive = true
+			tableView.bottomAnchor.constraint(equalTo: bottomLayoutGuide.topAnchor).isActive = true
+			
         } else {
             NSLayoutConstraint(item: searchBar, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1, constant: 0).isActive = true
             NSLayoutConstraint(item: searchBar, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1, constant: 0).isActive = true
@@ -587,23 +524,7 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
             NSLayoutConstraint(item: tableView, attribute: .top, relatedBy: .equal, toItem: searchBar, attribute: .bottom, multiplier: 1, constant: 0).isActive = true
             NSLayoutConstraint(item: tableView, attribute: .leading, relatedBy: .equal, toItem: searchBar, attribute: .leading, multiplier: 1, constant: 0).isActive = true
             NSLayoutConstraint(item: tableView, attribute: .trailing, relatedBy: .equal, toItem: searchBar, attribute: .trailing, multiplier: 1, constant: 0).isActive = true
-            
-            NSLayoutConstraint(item: mapView, attribute: .top, relatedBy: .equal, toItem: tableView, attribute: .bottom, multiplier: 1, constant: 0).isActive = true
-            NSLayoutConstraint(item: mapView, attribute: .leading, relatedBy: .equal, toItem: tableView, attribute: .leading, multiplier: 1, constant: 0).isActive = true
-            NSLayoutConstraint(item: mapView, attribute: .trailing, relatedBy: .equal, toItem: tableView, attribute: .trailing, multiplier: 1, constant: 0).isActive = true
-            NSLayoutConstraint(item: mapView, attribute: .bottom, relatedBy: .equal, toItem: bottomLayoutGuide, attribute: .top, multiplier: 1, constant: 0).isActive = true
-            
-            mapViewHeightConstraint = NSLayoutConstraint(item: mapView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
-            mapViewHeightConstraint.isActive = true
-            
-            NSLayoutConstraint(item: pinView, attribute: .centerX, relatedBy: .equal, toItem: mapView, attribute: .centerX, multiplier: 1, constant: 0).isActive = true
-            pinViewCenterYConstraint = NSLayoutConstraint(item: pinView, attribute: .centerY, relatedBy: .equal, toItem: mapView, attribute: .centerY, multiplier: 1, constant: -pinViewImageHeight / 2)
-            pinViewCenterYConstraint.isActive = true
-            
-            NSLayoutConstraint(item: pinShadowView, attribute: .centerX, relatedBy: .equal, toItem: mapView, attribute: .centerX, multiplier: 1, constant: 0).isActive = true
-            NSLayoutConstraint(item: pinShadowView, attribute: .centerY, relatedBy: .equal, toItem: mapView, attribute: .centerY, multiplier: 1, constant: 0).isActive = true
-            NSLayoutConstraint(item: pinShadowView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: pinShadowViewDiameter).isActive = true
-            NSLayoutConstraint(item: pinShadowView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: pinShadowViewDiameter).isActive = true
+
         }
     }
     
@@ -613,7 +534,7 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
     func panGestureInMapViewDidRecognize(panGestureRecognizer: UIPanGestureRecognizer) {
         switch(panGestureRecognizer.state) {
         case .began:
-            isMapViewCenterChanged = true
+//            isMapViewCenterChanged = true
             selectedLocationItem = nil
             geocoder.cancelGeocode()
             
@@ -648,19 +569,8 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
     }
     
     
-    // MARK: UI Mainipulations
-    
-    private func showMapView(withCenter coordinate: CLLocationCoordinate2D, distance: Double) {
-        mapViewHeightConstraint.constant = mapViewHeight
-        
-        let coordinateRegion = MKCoordinateRegionMakeWithDistance(coordinate, 0 , distance)
-        mapView.setRegion(coordinateRegion, animated: true)
-    }
-    
-    fileprivate func closeMapView() {
-        mapViewHeightConstraint.constant = 0
-    }
-    
+
+	
     
     // MARK: Location Handlers
     
@@ -672,12 +582,7 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
     public func selectLocationItem(_ locationItem: LocationItem) {
         selectedLocationItem = locationItem
         searchBar.text = locationItem.name
-        if let coordinate = locationItem.coordinate {
-            showMapView(withCenter: coordinateObject(fromTuple: coordinate), distance: longitudinalDistance)
-        } else {
-            closeMapView()
-        }
-        
+		
         barButtonItems?.doneButtonItem.isEnabled = true
         locationDidSelect(locationItem: locationItem)
     }
@@ -929,8 +834,8 @@ extension LocationPicker: UISearchBarDelegate {
             selectedLocationItem = nil
             searchResultLocations.removeAll()
             tableView.reloadData()
-            closeMapView()
-            
+//            closeMapView()
+			
             if let doneButtonItem = barButtonItems?.doneButtonItem {
                 doneButtonItem.isEnabled = false
             }
@@ -1031,44 +936,9 @@ extension LocationPicker: UITableViewDelegate, UITableViewDataSource {
 }
 
 
-// MARK: Map View Delegate
-
-extension LocationPicker: MKMapViewDelegate {
-    
-    public func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
-        if !animated {
-            UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseOut, animations: {
-                self.pinView.frame.origin.y -= self.pinViewImageHeight / 2
-                }, completion: nil)
-        }
-    }
-    
-    public func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        longitudinalDistance = getLongitudinalDistance(fromMapRect: mapView.visibleMapRect)
-        if isMapViewCenterChanged {
-            isMapViewCenterChanged = false
-            if #available(iOS 10, *) {
-                let coordinate = mapView.centerCoordinate
-                reverseGeocodeLocation(CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude))
-            } else {
-                let adjustedCoordinate = gcjToWgs(coordinate: mapView.centerCoordinate)
-                reverseGeocodeLocation(CLLocation(latitude: adjustedCoordinate.latitude, longitude: adjustedCoordinate.longitude))
-            }
-        }
-        
-        if !animated {
-            UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseOut, animations: {
-                self.pinView.frame.origin.y += self.pinViewImageHeight / 2
-                }, completion: nil)
-        }
-    }
-    
-}
-
-
 // MARK: Location Manager Delegate
 
-extension LocationPicker: CLLocationManagerDelegate {
+extension LocationPicker: CLLocationManagerDelegate, MKMapViewDelegate {
     
     public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print(error)
