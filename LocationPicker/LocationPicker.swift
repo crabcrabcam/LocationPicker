@@ -302,14 +302,14 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
     
     
     /// The image of the icon showed in current location cell. If this property is set, the `var currentLocationIconColor` won't be adopted.
-    public var currentLocationIcon: UIImage? = nil
-    
+//    public var currentLocationIcon: UIImage? = nil
+	
     /// The image of the icon showed in search result location cells. If this property is set, the `var searchResultLocationIconColor` won't be adopted.
-    public var searchResultLocationIcon: UIImage? = nil
-    
+//    public var searchResultLocationIcon: UIImage? = nil
+	
     /// The image of the icon showed in alternative location cells. If this property is set, the `var alternativeLocationIconColor` won't be adopted.
-    public var alternativeLocationIcon: UIImage? = nil
-    
+//    public var alternativeLocationIcon: UIImage? = nil
+	
     /// The image of the pin showed in the center of map view. If this property is set, the `var pinColor` won't be adopted.
     public var pinImage: UIImage? = nil
     
@@ -867,16 +867,16 @@ extension LocationPicker: UITableViewDelegate, UITableViewDataSource {
         if indexPath.row == 0 {
             cell = LocationCell(locationType: .currentLocation, locationItem: nil)
             cell.locationNameLabel.text = currentLocationText
-            cell.iconView.image = currentLocationIcon ?? StyleKit.imageOfMapPointerIcon(color: currentLocationIconColor)
+//            cell.iconView.image = currentLocationIcon ?? StyleKit.imageOfMapPointerIcon(color: currentLocationIconColor)
         } else if indexPath.row > 0 && indexPath.row <= searchResultLocations.count {
             let index = indexPath.row - 1
             cell = LocationCell(locationType: .searchLocation, locationItem: searchResultLocations[index])
-            cell.iconView.image = searchResultLocationIcon ?? StyleKit.imageOfSearchIcon(color: searchResultLocationIconColor)
+//            cell.iconView.image = searchResultLocationIcon ?? StyleKit.imageOfSearchIcon(color: searchResultLocationIconColor)
         } else if indexPath.row > searchResultLocations.count && indexPath.row <= alternativeLocationCount + searchResultLocations.count {
             let index = indexPath.row - 1 - searchResultLocations.count
             let locationItem = (alternativeLocations?[index] ?? dataSource?.alternativeLocation(at: index))!
             cell = LocationCell(locationType: .alternativeLocation, locationItem: locationItem)
-            cell.iconView.image = alternativeLocationIcon ?? StyleKit.imageOfPinIcon(color: alternativeLocationIconColor)
+//            cell.iconView.image = alternativeLocationIcon ?? StyleKit.imageOfPinIcon(color: alternativeLocationIconColor)
         }
         cell.locationNameLabel.textColor = primaryTextColor
         cell.locationAddressLabel.textColor = secondaryTextColor

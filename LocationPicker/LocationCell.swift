@@ -33,7 +33,6 @@ public class LocationCell: UITableViewCell {
     public var locationItem: LocationItem?
     public var locationType: LocationPicker.LocationType!
     
-    public let iconView = UIImageView()
     public let locationNameLabel = UILabel()
     public let locationAddressLabel = UILabel()
     public let containerView = UIView()
@@ -51,10 +50,7 @@ public class LocationCell: UITableViewCell {
         let length = contentView.bounds.height
         
         backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-        separatorInset.left = length
-        
-        iconView.frame = CGRect(x: 0, y: 0, width: length, height: length)
-        
+		
         if let locationItem = locationItem {
             locationNameLabel.font = UIFont.systemFont(ofSize: 16)
             locationNameLabel.text = locationItem.name
@@ -62,8 +58,7 @@ public class LocationCell: UITableViewCell {
             locationAddressLabel.font = UIFont.systemFont(ofSize: 11)
             locationAddressLabel.text = locationItem.formattedAddressString
         }
-        
-        contentView.addSubview(iconView)
+		
         containerView.addSubview(locationNameLabel)
         if locationType! != .currentLocation {
             containerView.addSubview(locationAddressLabel)
@@ -80,7 +75,7 @@ public class LocationCell: UITableViewCell {
             let margins = contentView.layoutMarginsGuide
             
             containerView.centerYAnchor.constraint(equalTo: margins.centerYAnchor).isActive = true
-            containerView.leadingAnchor.constraint(equalTo: iconView.trailingAnchor).isActive = true
+            containerView.leadingAnchor.constraint(equalTo: margins.leadingAnchor).isActive = true
             containerView.trailingAnchor.constraint(equalTo: margins.trailingAnchor).isActive = true
             
             locationNameLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
@@ -97,7 +92,9 @@ public class LocationCell: UITableViewCell {
             }
         } else {
             NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1, constant: 0).isActive = true
-            NSLayoutConstraint(item: containerView, attribute: .leading, relatedBy: .equal, toItem: iconView, attribute: .trailing, multiplier: 1, constant: 0).isActive = true
+			
+            NSLayoutConstraint(item: containerView, attribute: .leading, relatedBy: .equal, toItem: contentView, attribute: .trailing, multiplier: 1, constant: 0).isActive = true
+			
             NSLayoutConstraint(item: containerView, attribute: .trailing, relatedBy: .equal, toItem: contentView, attribute: .trailing, multiplier: 1, constant: 0).isActive = true
             
             NSLayoutConstraint(item: locationNameLabel, attribute: .leading, relatedBy: .equal, toItem: containerView, attribute: .leading, multiplier: 1, constant: 0).isActive = true
