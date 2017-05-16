@@ -228,7 +228,7 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
     public var currentLocationText = "Current Location"
     
     /// Text of search bar's placeholder. __Default__ is __`"Search for location"`__.
-    public var searchBarPlaceholder = "Search for location"
+    public var searchBarPlaceholder = "Add your location"
     
     /// Text of location denied alert title. __Default__ is __`"Location access denied"`__
     public var locationDeniedAlertTitle = "Location access denied"
@@ -490,7 +490,13 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
         searchBar.placeholder = searchBarPlaceholder
         let textFieldInsideSearchBar = searchBar.value(forKey: "searchField") as! UITextField
         textFieldInsideSearchBar.textColor = primaryTextColor
-        
+		
+		searchBar.backgroundColor = UIColor.white
+		searchBar.tintColor = UIColor.white
+		searchBar.barTintColor = UIColor.white
+		
+		searchBar.setImage(#imageLiteral(resourceName: "transparentPixel"), for: UISearchBarIcon.search, state: UIControlState.normal)
+		
         tableView.delegate = self
         tableView.dataSource = self
         tableView.keyboardDismissMode = .onDrag
@@ -867,18 +873,15 @@ extension LocationPicker: UITableViewDelegate, UITableViewDataSource {
         if indexPath.row == 0 {
             cell = LocationCell(locationType: .currentLocation, locationItem: nil)
             cell.locationNameLabel.text = currentLocationText
-//            cell.iconView.image = currentLocationIcon ?? StyleKit.imageOfMapPointerIcon(color: currentLocationIconColor)
         } else if indexPath.row > 0 && indexPath.row <= searchResultLocations.count {
             let index = indexPath.row - 1
             cell = LocationCell(locationType: .searchLocation, locationItem: searchResultLocations[index])
-//            cell.iconView.image = searchResultLocationIcon ?? StyleKit.imageOfSearchIcon(color: searchResultLocationIconColor)
         } else if indexPath.row > searchResultLocations.count && indexPath.row <= alternativeLocationCount + searchResultLocations.count {
             let index = indexPath.row - 1 - searchResultLocations.count
             let locationItem = (alternativeLocations?[index] ?? dataSource?.alternativeLocation(at: index))!
             cell = LocationCell(locationType: .alternativeLocation, locationItem: locationItem)
-//            cell.iconView.image = alternativeLocationIcon ?? StyleKit.imageOfPinIcon(color: alternativeLocationIconColor)
         }
-        cell.locationNameLabel.textColor = primaryTextColor
+        cell.locationNameLabel.textColor = UIColor.black
         cell.locationAddressLabel.textColor = secondaryTextColor
         
         return cell

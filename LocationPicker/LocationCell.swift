@@ -32,7 +32,7 @@ public class LocationCell: UITableViewCell {
     
     public var locationItem: LocationItem?
     public var locationType: LocationPicker.LocationType!
-    
+	
     public let locationNameLabel = UILabel()
     public let locationAddressLabel = UILabel()
     public let containerView = UIView()
@@ -54,7 +54,9 @@ public class LocationCell: UITableViewCell {
         if let locationItem = locationItem {
             locationNameLabel.font = UIFont.systemFont(ofSize: 16)
             locationNameLabel.text = locationItem.name
-            
+			
+			locationNameLabel.textColor = UIColor.black
+			
             locationAddressLabel.font = UIFont.systemFont(ofSize: 11)
             locationAddressLabel.text = locationItem.formattedAddressString
         }
