@@ -228,7 +228,23 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
     public var currentLocationText = "Current Location"
     
     /// Text of search bar's placeholder. __Default__ is __`"Search for location"`__.
-    public var searchBarPlaceholder = "Add your location"
+	public var searchBarPlaceholder: String {
+		
+		//This is some hacky shit because we can't left align the placeholder...
+		let screen = UIScreen.main.bounds.width
+		
+		if screen == 320 {
+			return "Add your location                                                                                            "
+		} else if screen == 375 {
+			return "Add your location                                                                                                                          "
+		} else if screen == 414 {
+			return "Add your location                                                                                                                                                                                                         "
+		} else {
+			return "Add your location"
+		}
+		
+		
+	}
     
     /// Text of location denied alert title. __Default__ is __`"Location access denied"`__
     public var locationDeniedAlertTitle = "Location access denied"
