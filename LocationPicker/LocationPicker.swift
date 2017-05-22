@@ -296,7 +296,7 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
     
     
     /// `tableView.backgroundColor` is set to this property's value afte view is loaded. __Default__ is __`UIColor.whiteColor()`__
-    public var tableViewBackgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+    public var tableViewBackgroundColor = UIColor(red:0.94, green:0.94, blue:0.96, alpha:1.00)
     
     /// The color of the icon showed in current location cell. __Default__ is __`UIColor(hue: 0.447, saturation: 0.731, brightness: 0.569, alpha: 1)`__
     public var currentLocationIconColor = #colorLiteral(red: 0.1176470588, green: 0.5098039216, blue: 0.3568627451, alpha: 1)
@@ -335,7 +335,7 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
     // MARK: - UI Elements
     
     public let searchBar = UISearchBar()
-    public let tableView = UITableView()
+	public let tableView = UITableView.init(frame: CGRect(x: 0, y: -10, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height), style: .grouped)
 	
     public private(set) var barButtonItems: (doneButtonItem: UIBarButtonItem, cancelButtonItem: UIBarButtonItem)?
     

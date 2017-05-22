@@ -49,7 +49,7 @@ public class LocationCell: UITableViewCell {
     private func setupViews() {
         let length = contentView.bounds.height
         
-        backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+        backgroundColor = UIColor.white
 		
         if let locationItem = locationItem {
             locationNameLabel.font = UIFont.systemFont(ofSize: 16)
