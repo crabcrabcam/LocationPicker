@@ -518,8 +518,8 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
         tableView.keyboardDismissMode = .onDrag
         tableView.backgroundColor = tableViewBackgroundColor
 		
+		view.addSubview(tableView)
         view.addSubview(searchBar)
-        view.addSubview(tableView)
 
     }
     
@@ -533,7 +533,7 @@ open class LocationPicker: UIViewController, UIGestureRecognizerDelegate {
             searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
             
-            tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor).isActive = true
+			tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: -90).isActive = true
             tableView.leadingAnchor.constraint(equalTo: searchBar.leadingAnchor).isActive = true
             tableView.trailingAnchor.constraint(equalTo: searchBar.trailingAnchor).isActive = true
 			tableView.bottomAnchor.constraint(equalTo: bottomLayoutGuide.topAnchor).isActive = true
